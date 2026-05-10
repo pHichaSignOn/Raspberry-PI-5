@@ -1,0 +1,270 @@
+Raspberrypi :
+https://www.raspberrypi.com/software/
+
+Advanced IP Scanner:
+https://www.advanced-ip-scanner.com/th/download/
+บน Windows
+
+Angry IP Scanner :
+https://angryip.org/download/utm_source=chatgpt.com
+บน macOS
+
+สรุปคำสั่ง:
+1.ssh pi-5@192.168.1.49
+	ลบ key เก่าอย่างเดียว (แนะนำ)
+	ssh-keygen -R 192.168.1.49 ใช้ตัวนนี้ท่าเข้าไม่ได้ 
+2.yes
+3.12345
+4.logout
+5.sudo shutdown now หรือ sudo poweroff หรือใช้ตัวเลือกปิดทันที: sudo shutdown -h now
+————
+1. คำสั่งพื้นฐาน (ต้องรู้ก่อน)
+pwd        # ดู path ปัจจุบัน
+ls         # ดูไฟล์
+ls -la     # ดูไฟล์ทั้งหมด (รวม hidden)
+cd folder  # เข้าโฟลเดอร์
+cd ..      # ย้อนกลับ
+
+2. จัดการไฟล์ / โฟลเดอร์
+mkdir test        # สร้างโฟลเดอร์
+touch file.txt    # สร้างไฟล์
+	cp a.txt b.txt    # copy
+	mv a.txt b.txt    # ย้าย / เปลี่ยนชื่อ
+rm file.txt       # ลบไฟล์
+rm -rf folder     # ลบโฟลเดอร์ (ระวังมาก)
+
+3. ดู / แก้ไขไฟล์
+cat file.txt      # ดูทั้งไฟล์
+l	ess file.txt     # เลื่อนดู (แนะนำ)
+nano file.txt     # แก้ไขง่าย. 
+	-ctrl o เขียน Enter บันทึก ctrl X ออก 
+	vim file.txt      # แก้ไขขั้นสูง
+
+4. ค้นหาไฟล์ / ข้อมูล
+	find . -name "file.txt"        # หาไฟล์
+	grep "word" file.txt           # ค้นคำในไฟล์
+	grep -r "word" .               # ค้นทั้งโฟลเดอร์
+
+5. จัดการ process (สำคัญมาก)
+top            # ดู process realtime
+ps aux         # ดู process ทั้งหมด
+	kill 1234      # ปิด process
+	kill -9 1234   # ปิดแบบ force
+
+6. ตรวจสอบระบบ / server
+htop           # ดู CPU RAM (ต้องติดตั้งเพิ่ม)
+df -h          # ดูพื้นที่ disk
+free -h        # ดู RAM
+uptime         # เวลาเครื่อง
+
+7. network
+ping google.com
+curl ifconfig.me     # ดู IP เครื่อง
+netstat -tulnp       # ดู port ที่เปิด
+
+8 สิทธิ์ไฟล์ (permission)
+chmod 755 file.sh
+chmod +x file.sh
+chown user:user file.txt
+
+9. โอนไฟล์ (จากเครื่องคุณ → server)
+ใช้จากเครื่อง Mac:
+scp file.txt user@ip:/path
+
+หรือดึงกลับ:
+scp user@ip:/path/file.txt .
+
+10. คำสั่งที่ “ใช้บ่อยมาก”
+clear        # ล้างหน้าจอ
+history      # ดูคำสั่งย้อนหลัง
+!!           # รันคำสั่งล่าสุดซ้ำ
+
+ระวัง (สำคัญ)
+rm -rf /
+
+ห้ามพิมพ์เด็ดขาด (ลบทั้งเครื่อง)
+เทคนิคให้ใช้คล่อง
+	•	กด Tab → auto complete
+	•	กด ↑ → เรียกคำสั่งเดิม
+	•	Ctrl + C → ยกเลิกคำสั่ง
+
+สรุป
+ถ้าคุณใช้ SSH เป็นแล้ว คำสั่งพวกนี้คือ “พื้นฐานระดับใช้งานจริง” เลย
+———————————————————————————————————
+“โครงสร้างไฟล์ของ OS (Linux)” แบบที่คุณกำลังใช้อยู่ผ่าน SSH — อธิบายให้เข้าใจง่าย + ใช้งานจริงได้เลย
+โครงสร้างไฟล์หลักของ Linux
+ทุกอย่างเริ่มที่:
+/
+เรียกว่า root directory (รากของระบบ)
+/ forward slash ใช้กับ Linux, macOS, URL, Unix
+\ backslash ใช้กับ Windows
+
+คำสั่ง:
+	cd ..
+	cd ..
+	pwd
+	ls -la
+
+/ (root directory - จุดเริ่มต้นของทุกสิ่ง)
+│
+├── /home        # ไฟล์ของผู้ใช้ทั่วไป (PI-5, pi, ubuntu)
+│   └── pi-5/    # โฟลเดอร์ส่วนตัวของคุณ PI-5
+│
+├── /root        # โฮมไดเรกทอรีของ root user (พิเศษ)
+│
+├── /etc         # ไฟล์ตั้งค่าระบบและโปรแกรมทั้งหมด
+│   ├── ssh/     # ตั้งค่า SSH (ปัญหาที่คุณเจออยู่)
+│   ├── nginx/   # ตั้งค่าเว็บเซิร์ฟเวอร์
+│   └── apt/     # ตั้งค่าระบบแพ็คเกจ
+│
+├── /var         # ข้อมูลที่เปลี่ยนแปลงบ่อย (logs, web, db)
+│   ├── log/     # ไฟล์บันทึกต่างๆ
+│   ├── www/     # เว็บไซต์ (บาง distro ใช้ /var/www)
+│   └── lib/     # ฐานข้อมูล (MySQL, PostgreSQL)
+│
+├── /usr         # โปรแกรมและไลบรารีหลัก
+│   ├── bin/     # คำสั่งสำหรับผู้ใช้ทั่วไป
+│   ├── local/   # โปรแกรมที่ติดตั้งเอง
+│   └── share/   # เอกสาร, themes, icons
+│
+├── /bin         # คำสั่งพื้นฐานที่จำเป็นตอนบูต (ls, cp, mv)
+│
+├── /sbin        # คำสั่งสำหรับผู้ดูแลระบบ (shutdown, fdisk)
+│
+├── /tmp         # ไฟล์ชั่วคราว (ลบอัตโนมัติเมื่อรีบูต)
+│
+├── /boot        # ไฟล์สำหรับบูตระบบ (kernel, initrd)
+│
+├── /dev         # อุปกรณ์ต่างๆ (hard drive, USB, keyboard)
+│
+├── /lib         # ไลบรารีพื้นฐานสำหรับ /bin และ /sbin
+│
+├── /opt         # โปรแกรมเสริมที่ติดตั้งด้วยมือ (optional)
+│
+├── /proc        # ข้อมูลระบบแบบ real-time (ใน RAM)
+│
+├── /run         # ข้อมูลชั่วคราวตั้งแต่บูตจนปิดเครื่อง
+│
+├── /srv         # ข้อมูลของบริการ (FTP, Web)
+│
+└── /mnt         # จุดต่ออุปกรณ์ชั่วคราว (USB, external drive)
+
+————————————————
+1.วิธีตั้งค่า Static IP สำหรับ Raspberry Pi
+	เนื่องจากคุณใช้ Raspberry Pi OS ราจะตั้งค่าผ่านไฟล์นี้เลยครับ
+		ดูข้อมูล Network ปัจจุบัน
+		ip addr show
+
+		ให้ดูว่า interface ชื่ออะไร (ส่วนใหญ่จะเป็น eth0 สำหรับสาย LAN หรือ wlan0 สำหรับ Wi-Fi)
+		ip route show default
+
+		แก้ไขไฟล์ dhcpcd.conf
+			sudo nano /etc/dhcpcd.conf
+
+		บันทึกไฟล์
+	⁃	กด Ctrl+O (จะถามชื่อไฟล์)
+	⁃	กด Enter (ยืนยัน)
+		ออกจาก nano
+	⁃	กด Ctrl+X
+
+1. วิธีตั้ง Static IP แบบ NetworkManager:
+nmcli connection show
+
+2. ตั้งค่า Static IP (เปลี่ยน name wifi ตามชื่อที่คุณได้):
+# ตั้ง IP Address
+sudo nmcli connection modify name wifi ipv4.addresses 192.168.1.100/24
+
+# ตั้ง Gateway
+sudo nmcli connection modify nname wifi ipv4.gateway 192.168.1.1
+
+# ตั้ง DNS
+sudo nmcli connection modify nname wifi ipv4.dns "8.8.8.8 1.1.1.1"
+
+# เปลี่ยนเป็น Manual (Static)
+sudo nmcli connection modify name wifi ipv4.method manual
+
+3. รีสตาร์ท Connection:
+sudo nmcli connection down name wifi  && sudo nmcli connection up ename wifi
+
+ssh pi-5@192.168.1.100
+ssh-keygen -R 192.168.1.100
+
+4. ตรวจสอบ IP:
+ip addr show wlan0
+
+คำสั่งรวมทั้งหมด (คัดลอกไปรันได้เลย):
+# ดูชื่อ connection ก่อน
+nmcli connection show
+
+# สมมติชื่อคือ 'name wifi ' ให้รันตามนี้:
+sudo nmcli connection modify name wifi  ipv4.addresses 192.168.1.100/24
+sudo nmcli connection modify name wifi  ipv4.gateway 192.168.1.1
+sudo nmcli connection modify name wifi  ipv4.dns "8.8.8.8 1.1.1.1"
+sudo nmcli connection modify name wifi  ipv4.method manual
+sudo nmcli connection down name wifi  && sudo nmcli connection up name wifi
+# ตรวจสอบ
+ip addr show wlan0
+——————————————————————————
+วิธีเปลี่ยนกลับเป็น Auto (DHCP) ด้วย NetworkManager:
+1. ดูชื่อ Connection:
+nmcli connection show
+
+2. เปลี่ยนเป็น Auto (DHCP):
+sudo nmcli connection modify name wifi ipv4.method auto
+
+3. รีสตาร์ท Connection:
+sudo nmcli connection down name wifi && sudo nmcli connection up name wifi
+
+4. ตรวจสอบ:
+ip addr show wlan0
+
+คำสั่งรวม (คัดลอกไปรันได้เลย):
+# ดูชื่อ connection ก่อน
+nmcli connection show
+
+# เปลี่ยนเป็น Auto (ใช้ชื่อ name wifi ที่ได้)
+sudo nmcli connection modify pname wifi ipv4.method auto
+sudo nmcli connection down name wifi && sudo nmcli connection up name wifi
+# ตรวจสอบ IP
+ip addr show wlan0
+——————————————————————————
+
+2.ติดตั้ง Web Serve Nginx
+sudo apt update 	#อัปเดตรายการซอฟต์แวร์
+sudo apt upgrade 		#อัปเกรดซอฟต์แวร์ที่มีอยู่
+sudo apt install nginx 	#ติดตั้งซอฟต์แวร์ใหม่
+
+ไม่ใส่ -y : ระบบจะถามยืนยันก่อน (ปลอดภัยกว่า เหมาะกับมือใหม่)
+sudo apt update                # 1. รู้ก่อนว่ามีอะไรใหม่บ้าง
+sudo apt upgrade -y          # 2. อัปเกรดของเก่า
+sudo apt install nginx -y     # 3. ติดตั้งของใหม่
+
+เมื่อติดตั้งเสร็จ ให้รันและเช็คสถานะ:
+sudo systemctl start nginx
+sudo systemctl enable nginx  # ให้รันอัตโนมัติเมื่อบูต
+sudo systemctl status nginx
+
+ลบ Nginx (แต่เก็บไฟล์ตั้งค่า):
+	sudo apt remove nginx
+
+ลบ Nginx พร้อมไฟล์ตั้งค่าทั้งหมด:
+	sudo apt purge nginx
+
+ลบ Nginx + ตัวที่เกี่ยวข้อง + ไฟล์ตั้งค่า:
+	sudo apt purge nginx && sudo apt autoremove
+
+3.ติดตั้ง Web Serve Apache
+sudo apt update
+sudo apt install apache2 -y
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+4. เปิด Port ใน Firewall (ถ้ามี)
+ถ้าคุณใช้ ufw (Firewall) ให้เปิด Port 80 (HTTP) และ 443 (HTTPS)
+
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# กรณีใช้ SSH อย่าลืมเปิด Port 22 ด้วย
+sudo ufw allow 22/tcp
+sudo ufw enable
