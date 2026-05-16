@@ -1,0 +1,95 @@
+การติดตั้ง FTP Server บน Raspberry Pi
+——————————————————
+ขั้นตอนที่ 1: ติดตั้ง VSFTPD
+	# อัปเดตแพ็กเกจลิสต์
+		sudo apt update
+	# ติดตั้ง vsftpd
+		sudo apt install vsftpd 
+		sudo apt install vsftpd -y #ตอบ Yes อัตโนมัติ (Assume yes)
+มื่อติดตั้งเสร็จ ระบบจะเริ่มบริการ FTP โดยอัตโนมัติ
+
+ขั้นตอนที่ 2: ตรวจสอบสถานะและสำรองข้อมูล config
+	# ตรวจสอบว่า VSFTPD ทำงานอยู่
+		sudo systemctl status vsftpd
+	# สำรองไฟล์ตั้งค่าเดิม (ขั้นตอนสำคัญ)
+		sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+
+ขั้นตอนที่ 3: ตั้งค่า VSFTPD
+	เปิดไฟล์ตั้งค่าด้วยโปรแกรม editor:
+		sudo nano /etc/vsftpd.conf
+
+3.1 การตั้งค่าพื้นฐาน (แนะนำสำหรับผู้ใช้ทั่วไป)
+พารามิเตอร์						ค่าที่ตั้ง					คำอธิบาย
+anonymous_enable=			    NO						ปิดการเข้าถึงแบบไม่ระบุชื่อ (ลดความเสี่ยง)
+local_enable	=				YES						อนุญาตให้ผู้ใช้ในระบบเข้าถึง FTP
+write_enable=					YES						อนุญาตให้อัปโหลด/แก้ไขไฟล์
+local_umask	=				022						ำหนดสิทธิ์เริ่มต้นของไฟล์ที่อัปโหลด
+chroot_local_use r=			YES						ล็อกผู้ใช้ให้อยู่เฉพาะโฟลเดอร์ home ของตัวเอง
+
+3.1.1 ค้นหาบรรทัดด้านล่างนี้ (หากไม่มี ให้เพิ่มไว้ท้ายไฟล์):
+
+พารามิเตอร์						ค่าที่ตั้ง					คำอธิบาย
+allow_writeable_chroot=	  	YES  					วิธีนี้เป็นการสั่งให้ vsftpd ยอมรับไดเรกทอรีที่เขียนข้อมูลได้ โดยไม่ต้องเปลี่ยนสิทธิ์ของโฟลเดอร์ 
+
+3.2 บันทึกและออกจาก editor
+	⁃	nano: กด Ctrl+O → Enter → Ctrl+X
+	⁃	vim: กด Esc → พิมพ์ :wq → Enter
+	⁃	
+
+ขั้นตอนที่ 4: ตั้งค่าโฟลเดอร์และสิทธิ์
+	# สร้างโฟลเดอร์สำหรับ FTP (ถ้ายังไม่มี)
+		sudo mkdir -p /home/pi-5/www
+	# เปลี่ยนเจ้าของโฟลเดอร์ (ถูกต้อง)
+		sudo chown pi-5:pi-5 /home/pi-5/www
+	# ตั้งค่าสิทธิ์
+     sudo chmod 755 /home/pi-5 /home/pi-5/www
+
+อธิบาย chown pi-5:pi-5:
+	⁃	pi-5 (ตัวแรก) = เจ้าของ (owner) คือ user pi-5
+	⁃	pi-5 (ตัวหลัง) = กลุ่ม (group) คือ group pi-5 (ถูกสร้างอัตโนมัติตอน useradd)
+สิทธิ์ 755 หมายถึง:
+	⁃	7 (rwx) = เจ้าของ (pi-5) อ่าน/เขียน/execute ได้
+	⁃	5 (r-x) = กลุ่ม อ่าน/execute ได้ แต่เขียนไม่ได้
+	⁃	5 (r-x) = คนอื่น อ่าน/execute ได้ แต่เขียนไม่ได้
+อยากให้ pi-5 เขียนได้เต็มที่ แต่คนอื่นไม่มีสิทธิ์เลย:
+		sudo chmod 750 /home/pi-5 /home/pi-5/www
+	# หรือ
+		sudo chmod 700 /home/pi-5 /home/pi-5/www
+
+ขั้นตอนที่ 5: รีสตาร์ทบริการและทดสอบ
+	# รีสตาร์ท VSFTPD เพื่อให้การตั้งค่ามีผล
+		sudo systemctl restart vsftpd
+	# ตั้งค่าให้เริ่มอัตโนมัติเมื่อบูตเครื่อง
+		sudo systemctl enable vsftpd
+
+ขั้นตอนที่ 6: เปลี่ยนเส้นทาง nginx
+	sudo nano /etc/nginx/sites-available/default
+
+server {
+    listen 80;
+    server_name your_domain.com;
+    #root /var/www/html;   
+	root /home/pi-5/www; # ชี้ไปที่โฟลเดอร์ www
+    location / {
+        autoindex on;          # เปิดให้เห็นรายการไฟล์ (optional)
+    }
+}
+                                                      
+ขั้นตอนที่ 7: รีสตาร์ททั้งสอง services                            						
+	sudo systemctl restart vsftpd
+	sudo systemctl restart nginx
+
+วิธีการเชื่อมต่อจาก Client
+	วิธีที่ 1: ใช้ Command Line
+		ftp YOUR_SERVER_IP
+		# ใส่ username และ password เมื่อระบบถาม
+	วิธีที่ 1: ใช้ FileZilla (แนะนำ)
+	⁃	ดาวน์โหลดและติดตั้ง FileZilla
+	⁃	กรอกข้อมูล:
+	⁃	Host: ftp://YOUR_SERVER_IP หรือ YOUR_SERVER_IP
+	⁃	Port: 21
+	⁃	Protocol: FTP - File Transfer Protocol
+	⁃	Encryption: Use plain FTP (หรือ Require explicit FTP over TLS ถ้าใช้ FTPS)
+	⁃	User: pi-5
+	⁃	Password: รหัสผ่านที่ตั้งไว้ 12345
+
