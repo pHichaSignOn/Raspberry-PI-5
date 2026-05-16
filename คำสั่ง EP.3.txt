@@ -268,3 +268,22 @@ sudo ufw allow 443/tcp
 # กรณีใช้ SSH อย่าลืมเปิด Port 22 ด้วย
 sudo ufw allow 22/tcp
 sudo ufw enable
+
+5.คำสั่งปิด Raspberry Pi แบบต่างๆ:
+
+ปิดเครื่องทันที (Shutdown)
+sudo shutdown now
+sudo poweroff
+
+ปิดเครื่องหลังจาก 1 นาที (ให้เวลาบันทึกงาน)
+sudo shutdown -h 1
+
+ปิดเครื่องทันที (อีกวิธี)
+sudo halt
+
+รีสตาร์ทเครื่อง (Restart)
+sudo reboot
+sudo shutdown -r now
+
+ยกเลิกการปิดเครื่อง (ถ้ายังไม่ถึงเวลา)
+sudo shutdown -c
