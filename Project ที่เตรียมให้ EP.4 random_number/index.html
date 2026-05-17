@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>เกมทายสุ่มตัวเลข 0-100 | ทายใจให้ถูก!</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="game-card">
+        <h1>🔢 ทายตัวเลข 0-100</h1>
+        <div class="sub">💡 ใบ้ให้: มากกว่า / น้อยกว่า</div>
+
+        <!-- แถบสถิติ -->
+        <div class="stats-panel">
+          <div class="stat-box">
+            <div class="stat-label">🎯 จำนวนครั้งที่ทาย</div>
+            <div class="stat-value attempt-value" id="attemptCount">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">⏱️ เวลาที่ใช้ (วินาที)</div>
+            <div class="stat-value timer-value" id="timerDisplay">0.0</div>
+          </div>
+        </div>
+
+        <!-- เขตป้อนตัวเลข -->
+        <div class="input-area">
+          <input
+            type="number"
+            id="guessInput"
+            class="guess-input"
+            placeholder="0-100"
+            min="0"
+            max="100"
+            step="1"
+            inputmode="numeric"
+          />
+        </div>
+
+        <div class="button-group">
+          <button id="guessBtn" class="btn-guess">✨ ทายเลย!</button>
+          <button id="resetBtn" class="btn-reset">🔄 เล่นใหม่ (เลขเดิม)</button>
+          <button id="newGameBtn" class="btn-new">🎲 สุ่มเลขใหม่</button>
+        </div>
+
+        <!-- กล่องแสดงคำใบ้ / ข้อความ -->
+        <div class="clue-box" id="clueMessage">
+          <span class="clue-text" id="clueMain">⚡ ป้อนตัวเลข 0-100</span>
+          <div class="message-small" id="subMessage">
+            ✨ กด "ทายเลย" เพื่อเริ่ม หรือสุ่มเลขใหม่
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

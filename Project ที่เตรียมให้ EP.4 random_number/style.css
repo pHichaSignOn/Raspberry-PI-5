@@ -1,0 +1,246 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  background: linear-gradient(145deg, #1a2a3a 0%, #0f1a24 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", "Poppins", system-ui, "Courier New", monospace;
+  margin: 0;
+  padding: 20px;
+}
+
+.game-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 64px;
+  padding: 20px;
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.game-card {
+  background: #fef9e8;
+  border-radius: 48px;
+  padding: 1.8rem 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+h1 {
+  font-size: 2.3rem;
+  background: linear-gradient(135deg, #2c5f8a, #1e3c5c);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+  font-weight: 800;
+}
+
+.sub {
+  font-size: 1rem;
+  color: #5a6874;
+  font-weight: 500;
+  border-bottom: 2px dashed #cfdde6;
+  display: inline-block;
+  padding-bottom: 6px;
+  margin-bottom: 20px;
+}
+
+.stats-panel {
+  background: #1e2f3c;
+  border-radius: 40px;
+  padding: 15px 20px;
+  margin: 20px 0 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: #f0f3f8;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box {
+  background: #0d1c24;
+  padding: 8px 18px;
+  border-radius: 60px;
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9bb7c9;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  font-family: "Courier New", monospace;
+  color: #ffd966;
+}
+
+.attempt-value {
+  color: #6bcb77;
+}
+
+.timer-value {
+  color: #ff9f4a;
+}
+
+.input-area {
+  margin: 20px 0;
+}
+
+.guess-input {
+  width: 180px;
+  font-size: 2rem;
+  padding: 12px 20px;
+  text-align: center;
+  font-weight: bold;
+  font-family: monospace;
+  border: 3px solid #cad2db;
+  border-radius: 60px;
+  background: white;
+  transition: 0.2s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.guess-input:focus {
+  border-color: #2c7da0;
+  box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.3);
+  transform: scale(1.02);
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 25px 0 20px;
+}
+
+button {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 40px;
+  background: #ecf0f1;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-guess {
+  background: #2c7da0;
+  color: white;
+  box-shadow: 0 6px 0 #1b4e69;
+}
+
+.btn-guess:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #1b4e69;
+}
+
+.btn-reset {
+  background: #f4a261;
+  color: #2d2f36;
+  box-shadow: 0 6px 0 #c76e2e;
+}
+
+.btn-reset:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #c76e2e;
+}
+
+.btn-new {
+  background: #2ecc71;
+  color: white;
+  box-shadow: 0 6px 0 #1f8f4b;
+}
+
+.btn-new:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #1f8f4b;
+}
+
+button:hover {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+
+.clue-box {
+  background: #e9f0f5;
+  padding: 18px 15px;
+  border-radius: 48px;
+  margin: 20px 0 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+  transition: 0.2s;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  word-break: break-word;
+}
+
+.clue-text {
+  background: #1e2f3c;
+  display: inline-block;
+  padding: 8px 25px;
+  border-radius: 50px;
+  color: #ffefc0;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+.message-small {
+  font-size: 0.85rem;
+  margin-top: 8px;
+  color: #32667e;
+  font-weight: normal;
+}
+
+footer {
+  margin-top: 20px;
+  font-size: 0.7rem;
+  color: #8aa0ae;
+}
+
+@media (max-width: 500px) {
+  .game-card {
+    padding: 1.2rem;
+  }
+  .stat-value {
+    font-size: 1.6rem;
+  }
+  .guess-input {
+    width: 140px;
+    font-size: 1.6rem;
+  }
+  .clue-text {
+    font-size: 1rem;
+  }
+  button {
+    padding: 8px 18px;
+    font-size: 0.9rem;
+  }
+}
